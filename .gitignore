@@ -1,3 +1,6 @@
 # Environmet
 .venv/
 .env
+
+# Python
+__pychache__/
