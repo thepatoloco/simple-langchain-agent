@@ -33,7 +33,7 @@ def search_banorte(query: str) -> list[str]:
     Returns:
         list[str]: most similar results
     """
-    return list(map(lambda x: x.page_content, vector_db.similarity_search(query)))
+    return list(map(lambda x: x.page_content, vector_db.similarity_search(query, k=7)))
 
 search_banorte_tool = StructuredTool.from_function(
     func=search_banorte,
@@ -63,7 +63,8 @@ Hay algunas cosas que Maya no puede hacer por si misma, pero puede utilizar herr
 # Herramientas:
 ## search_banorte
 // Vas a buscar información sobre los productos y servicios de banorte.
-// DEBES de ser ESPECÍFICA a la hora de buscar información.'''
+// La query de busqueda debe de ser AMPLIA para asegurarte de encontrar la información correcta.
+// SIEMPRE debes de buscar la información con esta herramienta antes de responder al cliente.'''
 prompt_template = ChatPromptTemplate(
     input_variables=['chat_history', 'input', 'agent_scratchpad'],
     messages=[
@@ -82,10 +83,8 @@ agent = create_openai_tools_agent(
 )
 
 # Declare agent executor
-agent_executor = AgentExecutor(
+maya_agent_executor = AgentExecutor(
     agent=agent,
     tools=tools,
     verbose=True
 )
-
-print(agent_executor.invoke({"input": "Hola, soy un estudiante con un salario de $8000 pesos mensuales, qué tarjeta de credito me recomiendas y por qué?"}))
